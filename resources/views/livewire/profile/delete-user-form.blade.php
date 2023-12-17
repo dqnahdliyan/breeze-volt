@@ -7,14 +7,11 @@ use function Livewire\Volt\rules;
 use function Livewire\Volt\state;
 
 state(['password' => '']);
-
 rules(['password' => ['required', 'string', 'current_password']]);
 
 $deleteUser = function (Logout $logout) {
     $this->validate();
-
     tap(Auth::user(), $logout(...))->delete();
-
     $this->redirect('/', navigate: true);
 };
 
@@ -31,14 +28,14 @@ $deleteUser = function (Logout $logout) {
         </p>
     </header>
 
-    <x-danger-button
+    <x-button
+        variant="destructive"
         x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+        x-on:click.prevent="$dispatch('open-dialog', 'confirm-user-deletion')"
+    >{{ __('Delete Account') }}</x-button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
-        <form wire:submit="deleteUser" class="p-6">
-
+    <x-dialog name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
+        <form wire:submit="deleteUser">
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
@@ -48,29 +45,27 @@ $deleteUser = function (Logout $logout) {
             </p>
 
             <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
+                <x-label for="password" class="sr-only">{{ __('Password') }}</x-label>
+                <x-input
                     wire:model="password"
                     id="password"
                     name="password"
                     type="password"
                     class="mt-1 block w-3/4"
                     placeholder="{{ __('Password') }}"
+                    :messages="$errors->get('password')"
                 />
-
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
             <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+                <x-button x-on:click="$dispatch('close')" type="button" variant="secondary">
                     {{ __('Cancel') }}
-                </x-secondary-button>
+                </x-button>
 
-                <x-danger-button class="ms-3">
+                <x-button type="submit" class="ms-3" variant="destructive">
                     {{ __('Delete Account') }}
-                </x-danger-button>
+                </x-button>
             </div>
         </form>
-    </x-modal>
+    </x-dialog>
 </section>

@@ -5,13 +5,13 @@
 ])
 
 @php
-$maxWidth = [
-    'sm' => 'sm:max-w-sm',
-    'md' => 'sm:max-w-md',
-    'lg' => 'sm:max-w-lg',
-    'xl' => 'sm:max-w-xl',
-    '2xl' => 'sm:max-w-2xl',
-][$maxWidth];
+    $maxWidth = [
+        'sm' => 'sm:max-w-sm',
+        'md' => 'sm:max-w-md',
+        'lg' => 'sm:max-w-lg',
+        'xl' => 'sm:max-w-xl',
+        '2xl' => 'sm:max-w-2xl',
+    ][$maxWidth];
 @endphp
 
 <div
@@ -39,13 +39,13 @@ $maxWidth = [
             document.body.classList.remove('overflow-y-hidden');
         }
     })"
-    x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
+    x-on:open-dialog.window="$event.detail == '{{ $name }}' ? show = true : null"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    class="fixed flex items-center justify-center min-h-screen inset-0 overflow-y-auto sm:px-0 z-50"
     style="display: {{ $show ? 'block' : 'none' }};"
 >
     <div
@@ -59,12 +59,12 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+        <div class="absolute inset-0 bg-background/80 backdrop-blur-sm"></div>
     </div>
 
     <div
         x-show="show"
-        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="bg-background inset-0 sm:max-h-fit z-50 grid rounded-xl shadow-lg overflow-hidden border transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -72,6 +72,29 @@ $maxWidth = [
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
     >
-        {{ $slot }}
+        @if(isset($title))
+            <div class="flex flex-col space-y-1.5 p-6 pb-0">
+                <div class="font-semibold leading-none tracking-tight">
+                    {{$title}}
+                </div>
+                @endif
+                @if(isset($description))
+                    <div class="text-sm text-muted-foreground">
+                        {{$description}}
+                    </div>
+            </div>
+        @endif
+        @if(isset($content))
+            {{$content}}
+        @else
+            <div class="p-6">
+                {{$slot}}
+            </div>
+        @endif
+        @if(isset($footer))
+            <div class="flex items-center p-6 pt-0">
+                {{$footer}}
+            </div>
+        @endif
     </div>
 </div>

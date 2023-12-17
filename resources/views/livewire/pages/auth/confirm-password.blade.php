@@ -17,7 +17,7 @@ rules(['password' => ['required', 'string']]);
 $confirmPassword = function () {
     $this->validate();
 
-    if (! Auth::guard('web')->validate([
+    if (!Auth::guard('web')->validate([
         'email' => Auth::user()->email,
         'password' => $this->password,
     ])) {
@@ -44,22 +44,21 @@ $confirmPassword = function () {
     <form wire:submit="confirmPassword">
         <!-- Password -->
         <div>
-            <x-input-label for="password" :value="__('Password')" />
+            <x-label for="password">{{ __('Password') }}</x-label>
 
-            <x-text-input wire:model="password"
-                          id="password"
-                          class="block mt-1 w-full"
-                          type="password"
-                          name="password"
-                          required autocomplete="current-password" />
+            <x-input wire:model="password"
+                     id="password"
+                     class="block mt-1 w-full"
+                     type="password"
+                     name="password"
+                     required autocomplete="current-password" :messages="$errors->get('password')"/>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <div class="flex justify-end mt-4">
-            <x-primary-button>
+            <x-button type="submit">
                 {{ __('Confirm') }}
-            </x-primary-button>
+            </x-button>
         </div>
     </form>
 </div>
